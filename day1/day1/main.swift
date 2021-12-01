@@ -16,7 +16,7 @@ guard testAnswerOne == countIncreasing(testData) else {
 }
 
 let url = URL(string: "file:///Users/kph/Stuff/aoc2021/day1/input.txt")!
-let depths = try String.init(contentsOf: url).split(separator: "\n").map { Int($0)! }
+let depths = try String(contentsOf: url).split(separator: "\n").map { Int($0)! }
 
 let increasingDepths = countIncreasing(depths)
 
