@@ -41,23 +41,19 @@ func parseInstructions<S: StringProtocol>(_ instructions: [S]) -> [(String, Int)
 }
 
 func processInstructionsPartOne<S: StringProtocol>(_ instructions: [S]) -> (Int, Int) {
-    var depth = 0
-    var horizontal = 0
-    
-    parseInstructions(instructions).forEach { (direction, amount) in
-        switch(direction) {
+    return parseInstructions(instructions).reduce((0,0)) { (result, instruction) in
+        switch(instruction.0) {
         case "forward":
-            horizontal += amount
+            return (result.0 + instruction.1, result.1)
         case "up":
-            depth -= amount
+            return (result.0, result.1 - instruction.1)
         case "down":
-            depth += amount
+            return (result.0, result.1 + instruction.1)
         default:
             print("UNKNOWN DIRECTION")
+            return result
         }
     }
-    
-    return (horizontal, depth)
 }
 
 let testAnswerTwoHorizontal = 15
@@ -77,25 +73,20 @@ print("Horizontal \(part2H) Depth \(part2D) Product \(answer2)")
 
 
 func processInstructionsPartTwo<S: StringProtocol>(_ instructions: [S]) -> (Int, Int) {
-    var depth = 0
-    var horizontal = 0
-    var aim = 0
-    
-    parseInstructions(instructions).forEach { (direction, amount) in
-        switch(direction) {
+    let (horizontal, depth, _) = parseInstructions(instructions).reduce((0,0,0)) { (result, instruction) in
+        switch(instruction.0) {
         case "forward":
-            horizontal += amount
-            depth += (aim*amount)
+            return (result.0 + instruction.1, result.1 + (result.2*instruction.1), result.2)
         case "up":
-            aim -= amount
+            return (result.0, result.1, result.2 - instruction.1)
         case "down":
-            aim += amount
+            return (result.0, result.1, result.2 + instruction.1)
         default:
             print("UNKNOWN DIRECTION")
+            return result
         }
     }
-    
-    return (horizontal, depth)
 
+    return (horizontal, depth)
 }
 
