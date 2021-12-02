@@ -36,7 +36,7 @@ print("Horizontal \(part1H) Depth \(part1D) Product \(answer1)")
 
 func parseInstructions<S: StringProtocol>(_ instructions: [S]) -> [(String, Int)] {
     return instructions
-        .map { $0.split(separator: " ").map { x in String(x) } }
+        .map { $0.split(separator: " ").map { String($0) } }
         .map { ($0[0], Int($0[1])!) }
 }
 
