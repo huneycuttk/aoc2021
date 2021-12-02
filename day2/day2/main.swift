@@ -7,7 +7,7 @@
 
 import Foundation
 
-let testData = [
+let testInstructions = [
     "forward 5",
     "down 5",
     "forward 8",
@@ -19,20 +19,8 @@ let testData = [
 let url = URL(string: "file:///Users/kph/Stuff/aoc2021/day2/input.txt")!
 let instructions = try String(contentsOf: url).split(separator: "\n")
 
-
-let testAnswerOneHorizontal = 15
-let testAnswerOneDepth = 10
-let testAnswerOne = 150
-let (test1H, test1D) = processInstructionsPartOne(testData)
-guard test1H == testAnswerOneHorizontal, test1D == testAnswerOneDepth else {
-    print("ANSWER INCORRECT")
-    exit(1)
-}
-
-let (part1H, part1D) = processInstructionsPartOne(instructions)
-let answer1 = part1H * part1D
-
-print("Horizontal \(part1H) Depth \(part1D) Product \(answer1)")
+let parsedTestInstructions = parseInstructions(testInstructions)
+let parsedInstructions = parseInstructions(instructions)
 
 func parseInstructions<S: StringProtocol>(_ instructions: [S]) -> [(String, Int)] {
     return instructions
@@ -40,8 +28,22 @@ func parseInstructions<S: StringProtocol>(_ instructions: [S]) -> [(String, Int)
         .map { ($0[0], Int($0[1])!) }
 }
 
-func processInstructionsPartOne<S: StringProtocol>(_ instructions: [S]) -> (Int, Int) {
-    return parseInstructions(instructions).reduce((0,0)) { (result, instruction) in
+let testAnswerOneHorizontal = 15
+let testAnswerOneDepth = 10
+let testAnswerOne = 150
+let (test1H, test1D) = processInstructionsPartOne(parsedTestInstructions)
+guard test1H == testAnswerOneHorizontal, test1D == testAnswerOneDepth else {
+    print("ANSWER INCORRECT")
+    exit(1)
+}
+
+let (part1H, part1D) = processInstructionsPartOne(parsedInstructions)
+let answer1 = part1H * part1D
+
+print("Horizontal \(part1H) Depth \(part1D) Product \(answer1)")
+
+func processInstructionsPartOne(_ instructions: [(String, Int)]) -> (Int, Int) {
+    return instructions.reduce((0,0)) { (result, instruction) in
         switch(instruction.0) {
         case "forward":
             return (result.0 + instruction.1, result.1)
@@ -60,20 +62,20 @@ let testAnswerTwoHorizontal = 15
 let testAnswerTwoDepth = 60
 let testAnswerTwo = 900
 
-let (test2H, test2D, test2A) = processInstructionsPartTwo(testData)
+let (test2H, test2D, test2A) = processInstructionsPartTwo(parsedTestInstructions)
 guard test2H == testAnswerTwoHorizontal, test2D == testAnswerTwoDepth else {
     print("ANSWER INCORRECT")
     exit(1)
 }
 
-let (part2H, part2D, part2A) = processInstructionsPartTwo(instructions)
+let (part2H, part2D, part2A) = processInstructionsPartTwo(parsedInstructions)
 let answer2 = part2H * part2D
 
 print("Horizontal \(part2H) Depth \(part2D) Aim \(part2A) Product \(answer2)")
 
 
-func processInstructionsPartTwo<S: StringProtocol>(_ instructions: [S]) -> (Int, Int, Int) {
-    return parseInstructions(instructions).reduce((0,0,0)) { (result, instruction) in
+func processInstructionsPartTwo(_ instructions: [(String, Int)]) -> (Int, Int, Int) {
+    return instructions.reduce((0,0,0)) { (result, instruction) in
         switch(instruction.0) {
         case "forward":
             return (result.0 + instruction.1, result.1 + (result.2*instruction.1), result.2)
