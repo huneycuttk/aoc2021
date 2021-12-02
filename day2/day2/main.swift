@@ -34,13 +34,18 @@ let answer1 = part1H * part1D
 
 print("Horizontal \(part1H) Depth \(part1D) Product \(answer1)")
 
+func parseInstructions<S: StringProtocol>(_ instructions: [S]) -> [(String, Int)] {
+    return instructions
+        .map { $0.split(separator: " ").map { x in String(x) } }
+        .map { ($0[0], Int($0[1])!) }
+}
+
 func processInstructionsPartOne<S: StringProtocol>(_ instructions: [S]) -> (Int, Int) {
     var depth = 0
     var horizontal = 0
     
-    instructions.map { $0.split(separator: " ") }.forEach { instruction in
-        let amount = Int(instruction[1])!
-        switch(instruction[0]) {
+    parseInstructions(instructions).forEach { (direction, amount) in
+        switch(direction) {
         case "forward":
             horizontal += amount
         case "up":
@@ -76,9 +81,8 @@ func processInstructionsPartTwo<S: StringProtocol>(_ instructions: [S]) -> (Int,
     var horizontal = 0
     var aim = 0
     
-    instructions.map { $0.split(separator: " ") }.forEach { instruction in
-        let amount = Int(instruction[1])!
-        switch(instruction[0]) {
+    parseInstructions(instructions).forEach { (direction, amount) in
+        switch(direction) {
         case "forward":
             horizontal += amount
             depth += (aim*amount)
