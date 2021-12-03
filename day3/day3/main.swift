@@ -82,14 +82,23 @@ func gammaAndEpsilon(diagnosticData: [Int], bitCount: Int) -> (Int, Int) {
 }
 
 func filterDataBitwise(diagnosticData: [Int], bitCount: Int, filter: ((Int,Int), Bool) -> Bool) -> Int {
-    var filtered = diagnosticData
-    var currentBit = bitCount - 1
-    while filtered.count > 1 {
-        let currentBitCount = filtered.reduce((0,0)) { $1.isBitSet(currentBit) ? ($0.0, $0.1 + 1) : ($0.0 + 1, $0.1) }
-        filtered = filtered.filter { filter(currentBitCount, $0.isBitSet(currentBit)) }
-        currentBit = currentBit - 1
-    }
-    return filtered[0]
+    [Int](0..<bitCount).reversed().reduce(diagnosticData) { filtered, currentBit in
+        if filtered.count == 1 {
+            return filtered
+        } else {
+            let currentBitCount = filtered.reduce((0,0)) { $1.isBitSet(currentBit) ? ($0.0, $0.1 + 1) : ($0.0 + 1, $0.1) }
+            return filtered.filter { filter(currentBitCount, $0.isBitSet(currentBit)) }
+        }
+    }[0]
+    
+//    var filtered = diagnosticData
+//    var currentBit = bitCount - 1
+//    while filtered.count > 1 {
+//        let currentBitCount = filtered.reduce((0,0)) { $1.isBitSet(currentBit) ? ($0.0, $0.1 + 1) : ($0.0 + 1, $0.1) }
+//        filtered = filtered.filter { filter(currentBitCount, $0.isBitSet(currentBit)) }
+//        currentBit = currentBit - 1
+//    }
+//    return filtered[0]
 }
 
 func o2GeneratorRating(diagnosticData: [Int], bitCount: Int) -> Int {
