@@ -78,17 +78,17 @@ func parseData<S: StringProtocol>(_ data: [S]) throws -> ([Int], [BingoBoard]) {
 }
 
 func playGame(boards: [BingoBoard], moves: [Int], winnerNumber: Int) -> Int {
-    var moveIndex = -1
+    var moveIdx = -1
     var lastWinnerIdx = boards.endIndex
     var boardsInPlay: [BingoBoard] = boards
-    let actualWinnerIndex = boards.endIndex - winnerNumber
+    let actualWinnerIdx = boards.endIndex - winnerNumber
     
-    while moveIndex < moves.count-1 && lastWinnerIdx != actualWinnerIndex {
-        moveIndex += 1
-        lastWinnerIdx = boardsInPlay[0..<lastWinnerIdx].partition { $0.mark(moves[moveIndex]) && $0.winner() }
+    while moveIdx < moves.count-1 && lastWinnerIdx != actualWinnerIdx {
+        moveIdx += 1
+        lastWinnerIdx = boardsInPlay[0..<lastWinnerIdx].partition { $0.mark(moves[moveIdx]) && $0.winner() }
     }
     
-    return boardsInPlay[lastWinnerIdx].score() * moves[moveIndex]
+    return boardsInPlay[lastWinnerIdx].score() * moves[moveIdx]
 }
 
 class BingoBoard {
@@ -121,10 +121,10 @@ class BingoBoard {
     
     func score() -> Int {
         return numbers.enumerated().reduce(0) { sum, pair in
-            let (rowIndex, row) = pair
+            let (rowIdx, row) = pair
             return sum + row.enumerated().reduce(0) { rowSum, columnPair in
-                let (columnIndex, number) = columnPair
-                return marked[rowIndex][columnIndex] ? rowSum : rowSum+number
+                let (columnIdx, number) = columnPair
+                return marked[rowIdx][columnIdx] ? rowSum : rowSum+number
             }
         }
     }
