@@ -24,46 +24,32 @@ let url = URL(string: "file:///Users/kph/Stuff/aoc2021/day5/input.txt")!
 let data = try String(contentsOf: url).split(separator: "\n")
 
 let testLines = parsePoints(testData)
-let (testMaxX, testMaxY) = findMax(testLines)
 
 let lines = parsePoints(data)
-let (maxX, maxY) = findMax(lines)
 
 // part 1
 let testIntersectionsAnswer = 5
-var testGrid = Grid(maxX: testMaxX, maxY: testMaxY)
-testGrid.plot(lines: testLines.filter { isHorizontalOrVertical($0) })
-
-let testIntersections = testGrid.countIntersections()
+let testIntersections = countIntersections(lines: testLines.filter { isHorizontalOrVertical($0) })
 print("TEST: Intersections \(testIntersections)")
 guard (testIntersections == testIntersectionsAnswer) else {
     print("INCORRECT ANSWER")
     exit(1)
 }
 
-var grid = Grid(maxX: maxX, maxY: maxY)
-grid.plot(lines: lines.filter { isHorizontalOrVertical($0) })
-
-let intersections = grid.countIntersections()
+let intersections = countIntersections(lines: lines.filter { isHorizontalOrVertical($0) })
 print("Intersections \(intersections)")
 
 // part 2
 let testIntersectionsAnswer2 = 12
-var testGrid2 = Grid(maxX: testMaxX, maxY: testMaxY)
-testGrid2.plot(lines: testLines)
-let testIntersections2 = testGrid2.countIntersections()
+let testIntersections2 = countIntersections(lines: testLines)
 print("TEST: Intersections \(testIntersections2)")
 guard (testIntersections2 == testIntersectionsAnswer2) else {
     print("INCORRECT ANSWER")
     exit(1)
 }
 
-var grid2 = Grid(maxX: maxX, maxY: maxY)
-grid2.plot(lines: lines)
-
-let intersections2 = grid2.countIntersections()
+let intersections2 = countIntersections(lines: lines)
 print("Intersections \(intersections2)")
-
 
 
 func parsePoints<S: StringProtocol>(_ data: [S]) -> [Line] {
@@ -73,13 +59,14 @@ func parsePoints<S: StringProtocol>(_ data: [S]) -> [Line] {
                             .map { Point($0) }) }
 }
 
-func findMax(_ lines: [Line]) -> (Int, Int) {
-    return (lines.flatMap { [ $0.start.x, $0.end.x ]}.max() ?? 0,
-            lines.flatMap { [ $0.start.y, $0.end.y ]}.max() ?? 0)
-}
-
 func isHorizontalOrVertical(_ line: Line) -> Bool {
     return line.start.x == line.end.x || line.start.y == line.end.y
+}
+
+func countIntersections(lines: [Line]) -> Int {
+   return lines.flatMap { $0.pointsInLine() }
+        .reduce(into: [:]) { $0[$1, default: 0] += 1}
+        .filter { $0.1 > 1 }.keys.count
 }
 
 struct Point : Hashable {
@@ -128,21 +115,4 @@ struct Line {
         
         return zip(rows, cols).map { Point($0) }
     }
-}
-
-struct Grid {
-    var points: [[Int]]
-    
-    init(maxX: Int, maxY: Int) {
-        self.points = [[Int]](repeating: [Int](repeating: 0, count: maxY+1), count: maxX+1)
-    }
-    
-    mutating func plot(lines: [Line]) -> Void {
-        lines.forEach { $0.pointsInLine().forEach { points[$0.x][$0.y] += 1 } }
-    }
-    
-    func countIntersections() -> Int {
-        return points.reduce(0) { $0 + $1.filter { $0 > 1 }.count }
-    }
-    
 }
