@@ -105,12 +105,12 @@ struct Line {
             let startRow = [ start.x, end.x ].min() ?? 0
             let endRow = [ start.x, end.x ].max() ?? 0
             rows = [Int](startRow...endRow)
-            if start.x < end.x { rows = rows.reversed() }
+            if start.x > end.x { rows = rows.reversed() }
 
             let startCol = [ start.y, end.y ].min() ?? 0
             let endCol = [ start.y, end.y ].max() ?? 0
             cols = [Int](startCol...endCol)
-            if start.y < end.y { cols = cols.reversed() }
+            if start.y > end.y { cols = cols.reversed() }
         }
         
         return zip(rows, cols).map { Point($0) }
