@@ -39,13 +39,11 @@ let (moves, boards) = try parseData(data)
 let testScoreAnswer = 4512
 let testScore = playGame(boards: testBoards, moves: testMoves, winnerNumber: 1)
 print("TEST: Score \(testScore)")
-guard testScore == testScoreAnswer else {
-    print("INCORRECT ANSWER")
-    exit(1)
-}
+assert(testScore == testScoreAnswer)
 
 let score = playGame(boards: boards, moves: moves, winnerNumber: 1)
 print("Score: \(score)")
+assert(score == 8580)
 
 testBoards.forEach { $0.reset() }
 boards.forEach { $0.reset() }
@@ -53,14 +51,11 @@ boards.forEach { $0.reset() }
 let testSquidGameScoreAnswer = 1924
 let testSquidGameScore = playGame(boards: testBoards, moves: testMoves, winnerNumber: testBoards.count)
 print("TEST: Squid Game Score \(testSquidGameScore)")
-guard testSquidGameScore == testSquidGameScoreAnswer else {
-    print("INCORRECT ANSWER")
-    exit(1)
-}
+assert(testSquidGameScore == testSquidGameScoreAnswer)
 
 let squidGameScore = playGame(boards: boards, moves: moves, winnerNumber: boards.count)
 print("Squid Game Score: \(squidGameScore)")
-
+assert(squidGameScore == 9576)
 
 func parseData<S: StringProtocol>(_ data: [S]) throws -> ([Int], [BingoBoard]) {
     let moves = data[0].split(separator: ",").map { Int($0) ?? 0 }
