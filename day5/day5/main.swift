@@ -31,26 +31,20 @@ let lines = parsePoints(data)
 let testIntersectionsAnswer = 5
 let testIntersections = countIntersections(lines: testLines.filter { $0.isHorizontalOrVertical() })
 print("TEST: Intersections \(testIntersections)")
-guard (testIntersections == testIntersectionsAnswer) else {
-    print("INCORRECT ANSWER")
-    exit(1)
-}
+assert(testIntersections == testIntersectionsAnswer)
 
 let intersections = countIntersections(lines: lines.filter { $0.isHorizontalOrVertical() })
 print("Intersections \(intersections)")
-
+assert(intersections == 4728)
 // part 2
 let testIntersectionsAnswer2 = 12
 let testIntersections2 = countIntersections(lines: testLines)
 print("TEST: Intersections \(testIntersections2)")
-guard (testIntersections2 == testIntersectionsAnswer2) else {
-    print("INCORRECT ANSWER")
-    exit(1)
-}
+assert(testIntersections2 == testIntersectionsAnswer2)
 
 let intersections2 = countIntersections(lines: lines)
 print("Intersections \(intersections2)")
-
+assert(intersections2 == 17717)
 
 func parsePoints<S: StringProtocol>(_ data: [S]) -> [Line] {
    return data.map { Line($0.components(separatedBy: "->")
