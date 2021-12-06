@@ -46,5 +46,5 @@ func simulate(ages: [Int], days: Int) -> Int {
         ageCounts.insert(newFish, at: 8)
         ageCounts[6] += newFish
     }
-    return ageCounts.reduce(0) { $0 + $1 }
+    return ageCounts.reduce(0, +)
 }
