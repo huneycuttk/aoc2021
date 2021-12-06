@@ -29,14 +29,14 @@ let lines = parsePoints(data)
 
 // part 1
 let testIntersectionsAnswer = 5
-let testIntersections = countIntersections(lines: testLines.filter { isHorizontalOrVertical($0) })
+let testIntersections = countIntersections(lines: testLines.filter { $0.isHorizontalOrVertical() })
 print("TEST: Intersections \(testIntersections)")
 guard (testIntersections == testIntersectionsAnswer) else {
     print("INCORRECT ANSWER")
     exit(1)
 }
 
-let intersections = countIntersections(lines: lines.filter { isHorizontalOrVertical($0) })
+let intersections = countIntersections(lines: lines.filter { $0.isHorizontalOrVertical() })
 print("Intersections \(intersections)")
 
 // part 2
@@ -59,13 +59,9 @@ func parsePoints<S: StringProtocol>(_ data: [S]) -> [Line] {
                             .map { Point($0) }) }
 }
 
-func isHorizontalOrVertical(_ line: Line) -> Bool {
-    return line.start.x == line.end.x || line.start.y == line.end.y
-}
-
 func countIntersections(lines: [Line]) -> Int {
    return lines.flatMap { $0.pointsInLine() }
-        .reduce(into: [:]) { $0[$1, default: 0] += 1}
+        .reduce(into: [:]) { $0[$1, default: 0] += 1 }
         .filter { $0.1 > 1 }.keys.count
 }
 
@@ -114,5 +110,9 @@ struct Line {
         }
         
         return zip(rows, cols).map { Point($0) }
+    }
+    
+    func isHorizontalOrVertical() -> Bool {
+        return start.x == end.x || start.y == end.y
     }
 }
