@@ -42,9 +42,16 @@ func parseAges<S: StringProtocol>(_ data: [S]) -> [Int] {
 func simulate(ages: [Int], days: Int) -> Int {
     var ageCounts = ages.reduce(into: [Int](repeating:0, count: 9)) { $0[$1] += 1 }
     for _ in 1...days {
-        let newFish = ageCounts.removeFirst()
-        ageCounts.insert(newFish, at: 8)
+        let newFish = ageCounts.rotate()
         ageCounts[6] += newFish
     }
     return ageCounts.reduce(0, +)
+}
+
+extension Array {
+    mutating func rotate() -> Element {
+        let x = removeFirst()
+        append(x)
+        return x
+    }
 }
