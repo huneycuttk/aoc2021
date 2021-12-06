@@ -40,15 +40,12 @@ let testEpsilonAnswer = 9
 let (testGamma, testEpsilon) = gammaAndEpsilon(diagnosticData: testParsedData, bitCount: testBitCount)
 let testAnswer1 = testGamma * testEpsilon
 print("TEST: Gamma \(testGamma), Epsilon \(testEpsilon), Answer \(testAnswer1)")
-guard testGamma == testGammaAnswer, testEpsilon == testEpsilonAnswer else {
-    print("INCORRECT ANSWER")
-    exit(1)
-}
+assert(testGamma == testGammaAnswer && testEpsilon == testEpsilonAnswer)
 
 let (gamma, epsilon) = gammaAndEpsilon(diagnosticData: parsedData, bitCount: bitCount)
 let answer1 = gamma * epsilon
 print("Gamma \(gamma), Epsilon \(epsilon), Answer \(answer1)")
-
+assert(answer1 == 2035764)
 
 let testO2GeneratorRatingAnswer = 23
 let testCO2ScrubberRatingAnswer = 10
@@ -56,15 +53,13 @@ let testO2GeneratorRating = o2GeneratorRating(diagnosticData: testParsedData, bi
 let testCO2ScrubberRating = co2ScrubberRating(diagnosticData: testParsedData, bitCount: testBitCount)
 let testAnswer2 = testO2GeneratorRating * testCO2ScrubberRating
 print("TEST: O2 Generator \(testO2GeneratorRating), CO2 Scrubber \(testCO2ScrubberRating), Answer \(testAnswer2)")
-guard testO2GeneratorRating == testO2GeneratorRatingAnswer, testCO2ScrubberRating == testCO2ScrubberRatingAnswer else {
-    print("INCORRECT ANSWER")
-    exit(1)
-}
+assert(testO2GeneratorRating == testO2GeneratorRatingAnswer && testCO2ScrubberRating == testCO2ScrubberRatingAnswer)
 
 let o2GeneratorRatingAnswer = o2GeneratorRating(diagnosticData: parsedData, bitCount: bitCount)
 let co2ScrubberRatingAnswer = co2ScrubberRating(diagnosticData: parsedData, bitCount: bitCount)
 let answer2 = o2GeneratorRatingAnswer * co2ScrubberRatingAnswer
 print("O2 Generator \(o2GeneratorRatingAnswer), CO2 Scrubber \(co2ScrubberRatingAnswer), Answer \(answer2)")
+assert(answer2 == 2817661)
 
 func parseData<S: StringProtocol>(_ data: [S]) -> (Int, [Int]) {
     let bitCount = data.map { $0.count }.max() ?? 0
