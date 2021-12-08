@@ -89,5 +89,30 @@ func decodeInputs(_ codes: [String]) -> [Set<Character>] {
     // five is the remaining five character code
     let five = lenFive.first { $0 != three && $0 != two }!
         
+    // for fun, let's calculate the actual signal mapping
+    // already have e
+    // a is seven - one
+    let a = seven.subtracting(one).first!
+    // c is eight - six
+    let c = eight.subtracting(six).first!
+    // f is one - c
+    let f = one.subtracting(Set([c])).first!
+    // d is eight - zero
+    let d = eight.subtracting(zero).first!
+    // g is five - four - a
+    let g = five.subtracting(four).subtracting(Set([e])).first!
+    // b is eight - three - two
+    let b = eight.subtracting(three).subtracting(two).first!
+    
+    let _ = [
+        "a": a,
+        "b": b,
+        "c": c,
+        "d": d,
+        "e": e,
+        "f": f,
+        "g": g
+    ]
+    
     return [ zero, one, two, three, four, five, six, seven, eight, nine ]
 }
