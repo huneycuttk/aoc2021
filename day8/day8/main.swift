@@ -57,7 +57,7 @@ func decodeOutputs(data: [([String], [String])]) -> Int {
 }
 
 func decodeOutput(code: [Set<Character>], output: [String]) -> Int {
-    return Int(output.map { code.firstIndex(of: Set($0))! }.map { String($0) }.joined())!
+    return Int(output.map { Set($0) }.map { code.firstIndex(of: $0)! }.map { String($0) }.joined())!
 }
 
 func decodeInputs(_ codes: [String]) -> [Set<Character>] {
