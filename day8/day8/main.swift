@@ -89,6 +89,5 @@ func decodeInputs(_ codes: [String]) -> [Set<Character>] {
     // five is the remaining five character code
     let five = lenFive.first { $0 != three && $0 != two }!
         
-    // return the array with the elements sorted for easier use later
     return [ zero, one, two, three, four, five, six, seven, eight, nine ]
 }
