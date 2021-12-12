@@ -40,8 +40,7 @@ func findPaths(graph: Graph, from start: Vertex, to end: Vertex,
         let newPaths = Set(paths.subtracting(deadEnds).map { $0 + [ nextVertex ] })
         
         
-        let completed = findPaths(graph: graph, from: nextVertex, to: end, paths: newPaths, canRevisit: canRevisit)
-        return completed
+        return findPaths(graph: graph, from: nextVertex, to: end, paths: newPaths, canRevisit: canRevisit)
     }.reduce(Set<Path>()) { $0.union($1) }
 }
 
