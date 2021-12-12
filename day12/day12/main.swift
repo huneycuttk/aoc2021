@@ -36,7 +36,7 @@ func findPaths(graph: Graph, from start: Vertex, to end: Vertex,
     }
         
     return graph[start, default: Set<Vertex>()].map() { nextVertex -> Set<Path> in
-        let deadEnds = canRevisit(nextVertex, paths) ? [] : paths.filter { $0.contains { $0 == nextVertex } }
+        let deadEnds = canRevisit(nextVertex, paths) ? [] : paths.filter { $0.contains(nextVertex) }
         let newPaths = Set(paths.subtracting(deadEnds).map { $0 + [ nextVertex ] })
         
         
