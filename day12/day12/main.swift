@@ -7,30 +7,11 @@
 
 import Foundation
 
-let testUrl = URL(string: "file:///Users/kph/Stuff/aoc2021/day12/test-input.txt")!
-let testData = try String(contentsOf: testUrl).trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "\n")
+let testGraph = try parseGraph(readFile("file:///Users/kph/Stuff/aoc2021/day12/test-input.txt"))
+let graph = try parseGraph(readFile("file:///Users/kph/Stuff/aoc2021/day12/input.txt"))
 
-
-let url = URL(string: "file:///Users/kph/Stuff/aoc2021/day12/input.txt")!
-let data = try String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "\n")
-
-let testGraph = parseGraph(testData)
-let testNumberOfPaths = findNumberOfPaths(graph: testGraph, from: "start", to: "end", canRevisit: onlyBigCaves)
-print("TEST: Number of paths \(testNumberOfPaths)")
-assert(testNumberOfPaths == 226)
-
-let graph = parseGraph(data)
-let numberOfPaths = findNumberOfPaths(graph: graph, from: "start", to: "end", canRevisit: onlyBigCaves)
-print("Number of paths \(numberOfPaths)")
-assert(numberOfPaths == 3000)
-
-let testNumberOfPaths2 = findNumberOfPaths(graph: testGraph, from: "start", to: "end", canRevisit: canRevisitSingleSmallCaveTwice)
-print("TEST: Number of paths \(testNumberOfPaths2)")
-assert(testNumberOfPaths2 == 3509)
-
-let numberOfPaths2 = findNumberOfPaths(graph: graph, from: "start", to: "end", canRevisit: canRevisitSingleSmallCaveTwice)
-print("Number of paths \(numberOfPaths2)")
-assert(numberOfPaths2 == 74222)
+part1()
+part2()
 
 typealias Vertex = String
 typealias Graph = [String:Set<Vertex>]
@@ -84,4 +65,29 @@ func canRevisitSingleSmallCaveTwice(_ vertex: Vertex, _ paths: Set<Path>) -> Boo
     }
     
     return true
+}
+
+func readFile(_ file: String) throws -> [String] {
+    let url = URL(string: file)!
+    return try String(contentsOf: url).trimmingCharacters(in: .whitespacesAndNewlines).components(separatedBy: "\n")
+}
+
+func part1() {
+    let testNumberOfPaths = findNumberOfPaths(graph: testGraph, from: "start", to: "end", canRevisit: onlyBigCaves)
+    print("TEST: Number of paths \(testNumberOfPaths)")
+    assert(testNumberOfPaths == 226)
+
+    let numberOfPaths = findNumberOfPaths(graph: graph, from: "start", to: "end", canRevisit: onlyBigCaves)
+    print("Number of paths \(numberOfPaths)")
+    assert(numberOfPaths == 3000)
+}
+
+func part2() {
+    let testNumberOfPaths2 = findNumberOfPaths(graph: testGraph, from: "start", to: "end", canRevisit: canRevisitSingleSmallCaveTwice)
+    print("TEST: Number of paths \(testNumberOfPaths2)")
+    assert(testNumberOfPaths2 == 3509)
+
+    let numberOfPaths2 = findNumberOfPaths(graph: graph, from: "start", to: "end", canRevisit: canRevisitSingleSmallCaveTwice)
+    print("Number of paths \(numberOfPaths2)")
+    assert(numberOfPaths2 == 74222)
 }
