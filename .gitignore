@@ -1,0 +1,7 @@
+build
+DerivedData
+**/xcuserdata
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
