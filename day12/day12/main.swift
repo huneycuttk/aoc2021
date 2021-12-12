@@ -45,11 +45,11 @@ func findPaths(graph: Graph, from start: Vertex, to end: Vertex,
 }
 
 func onlyBigCaves(_ vertex: Vertex, _ paths: Set<Path>) -> Bool {
-    return vertex.uppercased() == vertex
+    return vertex.isUppercase()
 }
 
 func canRevisitSingleSmallCaveTwice(_ vertex: Vertex, _ paths: Set<Path>) -> Bool {
-    if vertex.uppercased() == vertex {
+    if (vertex.isUppercase()) {
         return true
     }
     
@@ -57,13 +57,23 @@ func canRevisitSingleSmallCaveTwice(_ vertex: Vertex, _ paths: Set<Path>) -> Boo
         return false
     }
     
-    let smallCaves = paths.map { $0.filter { $0.lowercased() == $0 }
+    let smallCaves = paths.map { $0.filter { $0.isLowercase() }
         .reduce(into: [Vertex:Int]()) { $0[$1, default: 0] += 1 } }
-    if smallCaves.first(where: { $0.values.contains { $0 > 1 } }) != nil {
+    if (smallCaves.first(where: { $0.values.contains { $0 > 1 } }) != nil) {
         return false
     }
     
     return true
+}
+
+extension String {
+    func isUppercase() -> Bool {
+        self.uppercased() == self
+    }
+    
+    func isLowercase() -> Bool {
+        self.lowercased() == self
+    }
 }
 
 func readFile(_ file: String) throws -> [String] {
