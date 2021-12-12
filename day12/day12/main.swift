@@ -14,7 +14,7 @@ part1()
 part2()
 
 typealias Vertex = String
-typealias Graph = [String:Set<Vertex>]
+typealias Graph = [Vertex:Set<Vertex>]
 typealias Path = [Vertex]
 func parseGraph(_ data: [String]) -> Graph {
     return data.map { $0.components(separatedBy: "-").map { $0.trimmingCharacters(in: .whitespaces) } }
