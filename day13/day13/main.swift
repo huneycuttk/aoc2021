@@ -178,10 +178,14 @@ struct Dot : Hashable {
         let (axis, along) = instruction
         switch(axis) {
         case .x:
-            return Dot(x: x > along ? along-(x-along) : x, y: y)
+            return Dot(x: fold(coordinate: x, along: along), y: y)
         case .y:
-            return Dot(x: x, y: y > along ? along-(y-along) : y)
+            return Dot(x: x, y: fold(coordinate: y, along: along))
         }
+    }
+    
+    func fold(coordinate: Int, along: Int) -> Int {
+        return coordinate > along ? along-(coordinate-along) : coordinate
     }
 }
 
