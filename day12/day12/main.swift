@@ -24,37 +24,40 @@ func parseGraph(_ data: [String]) -> Graph {
         }
 }
     
-func findNumberOfPaths(graph: Graph, from start: Vertex, to end: Vertex, canRevisit: (Vertex, Set<Path>) -> Bool) -> Int {
+func findNumberOfPaths(graph: Graph, from start: Vertex, to end: Vertex, canRevisit: (Vertex, [Path]) -> Bool) -> Int {
     return findPaths(graph: graph, from: start, to: end,
-                     paths: Set<Path>(arrayLiteral: [ start ]), canRevisit: canRevisit).count
+                     paths: [Path](arrayLiteral: [ start ]), canRevisit: canRevisit).count
 }
 
 func findPaths(graph: Graph, from start: Vertex, to end: Vertex,
-               paths: Set<Path>, canRevisit: (Vertex, Set<Path>) -> Bool) -> Set<Path> {
+               paths: [Path], canRevisit: (Vertex, [Path]) -> Bool) -> [Path] {
     if (start == end || paths.isEmpty) {
         return paths
     }
         
-    return graph[start, default: Set<Vertex>()].map() { nextVertex -> Set<Path> in
+    return graph[start, default: Set<Vertex>()].map() { nextVertex -> [Path] in
         let deadEnds = canRevisit(nextVertex, paths) ? [] : paths.filter { $0.contains(nextVertex) }
-        let newPaths = Set(paths.subtracting(deadEnds).map { $0 + [ nextVertex ] })
-        
+        let newPaths = paths.filter { !deadEnds.contains($0) }.map { $0 + [ nextVertex ] }
         
         return findPaths(graph: graph, from: nextVertex, to: end, paths: newPaths, canRevisit: canRevisit)
-    }.reduce(Set<Path>()) { $0.union($1) }
+    }.reduce([Path]()) { $0 + $1 }
 }
 
-func onlyBigCaves(_ vertex: Vertex, _ paths: Set<Path>) -> Bool {
+func onlyBigCaves(_ vertex: Vertex, _ paths: [Path]) -> Bool {
     return vertex.isUppercase()
 }
 
-func canRevisitSingleSmallCaveTwice(_ vertex: Vertex, _ paths: Set<Path>) -> Bool {
+func canRevisitSingleSmallCaveTwice(_ vertex: Vertex, _ paths: [Path]) -> Bool {
     if (vertex.isUppercase()) {
         return true
     }
     
     if (["start", "end"].contains(vertex)) {
         return false
+    }
+    
+    if (!paths.contains { $0.contains(vertex) }) {
+        return true
     }
     
     let smallCaves = paths.map { $0.filter { $0.isLowercase() }
