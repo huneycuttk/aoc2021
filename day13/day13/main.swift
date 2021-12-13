@@ -12,7 +12,11 @@ let (grid, instructions) = try parsePaper(readFile("file:///Users/kph/Stuff/aoc2
 
 part1()
 part2()
-try part2AsDots()
+
+let (dots, dotsInstructions) = try parsePaperDots(readFile("file:///Users/kph/Stuff/aoc2021/day13/input.txt"))
+
+part1AsDots()
+part2AsDots()
 
 typealias Grid = [[Bool]]
 typealias Point = (Int, Int)
@@ -216,10 +220,17 @@ func printDots(_ dots: [Dot]) -> String {
     }.joined(separator: "\n")
 
 }
-func part2AsDots() throws {
-    let (dots, instructions) = try parsePaperDots(readFile("file:///Users/kph/Stuff/aoc2021/day13/input.txt"))
-    
-    let finalDots = instructions.reduce(dots) { dots, instruction in dots.map { $0.fold(instruction) } }
+
+
+func part1AsDots() {
+    let instruction = dotsInstructions.first!
+    let numberOfDots = Set(dots.map { $0.fold(instruction) }).count
+    print("Number of dots after first fold \(numberOfDots)")
+    assert(numberOfDots == 618)
+}
+
+func part2AsDots() {
+    let finalDots = dotsInstructions.reduce(dots) { dots, instruction in dots.map { $0.fold(instruction) } }
     
     print(printDots(finalDots))
 }
