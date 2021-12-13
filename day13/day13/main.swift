@@ -12,10 +12,11 @@ let (grid, instructions) = try parsePaper(readFile("file:///Users/kph/Stuff/aoc2
 
 part1()
 part2()
+try part2AsDots()
 
 typealias Grid = [[Bool]]
 typealias Point = (Int, Int)
-typealias Instruction = (Grid.Axis, Int)
+typealias Instruction = (Axis, Int)
 enum FoldError : Error {
     case InvalidInstructionError
 }
@@ -44,8 +45,9 @@ func parsePaper(_ data: [String]) throws -> (Grid, [Instruction]) {
     return (grid, instructions)
 }
 
+enum Axis { case x, y }
+
 extension Grid {
-    enum Axis { case x, y }
     
     init(_ points: [Point]) {
         let xCount = points.map { $0.0 }.max()! + 1
@@ -160,4 +162,64 @@ func part2() {
     assert(pattern == patternAnswer)
     
     //ALREKFKU
+}
+
+
+
+// AS DOTS ALONE
+struct Dot : Hashable {
+    let x, y: Int
+    
+    func fold(_ instruction: Instruction) -> Dot {
+        let (axis, along) = instruction
+        switch(axis) {
+        case .x:
+            return Dot(x: x > along ? along-(x-along) : x, y: y)
+        case .y:
+            return Dot(x: x, y: y > along ? along-(y-along) : y)
+        }
+    }
+}
+
+func parsePaperDots(_ data: [String]) throws -> ([Dot], [Instruction]) {
+    let instructionStart = data.firstIndex { $0.starts(with: "fold along") }!
+    
+    let dots = data[0..<instructionStart-1].map { $0.components(separatedBy: ",")
+                                                        .map { Int($0)! }}
+            .map { Dot(x: $0[0], y: $0[1]) }
+    
+    let instructions = try data[instructionStart..<data.count].map {
+            $0.components(separatedBy: .whitespaces)[2].components(separatedBy: "=")
+    }.map { instruction -> Instruction in
+        let along = Int(instruction[1])!
+        switch(instruction[0]) {
+        case "x":
+            return (.x, along)
+        case "y":
+            return (.y, along)
+        default:
+            throw FoldError.InvalidInstructionError
+        }
+    }
+    
+    return (dots, instructions)
+}
+
+func printDots(_ dots: [Dot]) -> String {
+    let maxX = dots.map { $0.x }.max()!
+    let maxY = dots.map { $0.y }.max()!
+    
+    return [Int](0...maxY).map { y in
+        [Int](0...maxX).map { x in
+            dots.contains(Dot(x: x, y: y)) ? "#" : "."
+        }.joined()
+    }.joined(separator: "\n")
+
+}
+func part2AsDots() throws {
+    let (dots, instructions) = try parsePaperDots(readFile("file:///Users/kph/Stuff/aoc2021/day13/input.txt"))
+    
+    let finalDots = instructions.reduce(dots) { dots, instruction in dots.map { $0.fold(instruction) } }
+    
+    print(printDots(finalDots))
 }
