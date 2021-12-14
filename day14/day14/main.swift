@@ -26,7 +26,6 @@ func parsePolymerAndRules(_ data: [String]) -> (Polymer, Rules) {
         
         return ((parts[0].first!, parts[0].last!), parts[1].first!)
     }
-    
     return (Array(data[0]), rules)
 }
 
@@ -49,7 +48,7 @@ extension Polymer {
             } else {
                 return [ pair.0 ]
             }
-        } + [ self[count-1] ]
+        } + [ self.last! ]
     }
     
     func toPairMap() -> PolymerPairMap {
@@ -86,10 +85,10 @@ func mostCommonMinusLeastCommonByPairs(polymer: Polymer, rules: Rules, count: In
     var counts = finalPairCounts.reduce(into: [Character:Int]()) { counts, pairCount in
         let (pair, count) = pairCount
         // count only the first letter; otherwise we'll double count
-        counts[pair[0], default: 0] += count
+        counts[pair.first!, default: 0] += count
     }
     // because we counted only the first letter, need to add one to the count of the final letter
-    counts[polymer[polymer.count-1], default: 0] += 1
+    counts[polymer.last!, default: 0] += 1
     return counts.values.max()! - counts.values.min()!
 }
 
