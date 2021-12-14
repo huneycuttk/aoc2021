@@ -58,9 +58,17 @@ extension Grid {
         let yCount = points.map { $0.1 }.max()! + 1
         
         self.init(repeating: [Bool](repeating: false, count: yCount), count: xCount)
-        points.forEach { self[$0.0][$0.1] = true }
+        points.forEach { self[$0.0, $0.1] = true }
     }
     
+    subscript(x: Int, y: Int) -> Bool {
+        get {
+            self[x][y]
+        }
+        set(newValue) {
+            self[x][y] = newValue
+        }
+    }
     func fold(_ instruction: Instruction) -> Grid {
         switch (instruction.0) {
         case .x:
@@ -79,7 +87,7 @@ extension Grid {
 
         for offset in 1..<self[0].count-along {
             [Int](0..<self.count).forEach { x in
-                copy[x][along-offset] = self[x][along-offset] || self[x][along+offset]
+                copy[x, along-offset] = self[x, along-offset] || self[x, along+offset]
             }
         }
         
@@ -92,7 +100,7 @@ extension Grid {
         
         for offset in 1..<self.count-along {
             [Int](0..<self[0].count).forEach { y in
-                copy[along-offset][y] = self[along-offset][y] || self[along+offset][y]
+                copy[along-offset, y] = self[along-offset, y] || self[along+offset, y]
             }
         }
         
@@ -108,7 +116,7 @@ extension Grid {
     func toString() -> String {
         return [Int](0..<self[0].count).map { y in
             [Int](0..<count).map { x in
-                self[x][y] ? "#" : "."
+                self[x, y] ? "#" : "."
             }.joined()
         }.joined(separator: "\n")
     }
