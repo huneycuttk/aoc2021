@@ -30,7 +30,7 @@ func parsePolymerAndRules(_ data: [String]) -> (Polymer, Rules) {
 }
 
 extension Rules {
-    func findRule(pair: Pair) -> Character? {
+    subscript(_ pair: Pair) -> Character? {
         return first { $0.0 == pair }?.1
     }
     
@@ -43,7 +43,7 @@ extension Rules {
 extension Polymer {
     func polymerExpansion(rules: Rules) -> Polymer {
         zip(self[0..<count-1], self[1..<count]).flatMap { pair -> [Character] in
-            if let add = rules.findRule(pair: pair) {
+            if let add = rules[pair] {
                 return [ pair.0, add ]
             } else {
                 return [ pair.0 ]
