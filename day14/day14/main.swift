@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Algorithms
 
 let (testTemplate, testRules) = try parsePolymerAndRules(readFile("file:///Users/kph/Stuff/aoc2021/day14/test-input.txt"))
 let (template, rules) = try parsePolymerAndRules(readFile("file:///Users/kph/Stuff/aoc2021/day14/input.txt"))
@@ -42,7 +43,8 @@ extension Rules {
 
 extension Polymer {
     func polymerExpansion(rules: Rules) -> Polymer {
-        zip(self[0..<count-1], self[1..<count]).flatMap { pair -> [Character] in
+        windows(ofCount: 2).flatMap { window -> [Character] in
+            let pair = (window.first!, window.last!)
             if let add = rules[pair] {
                 return [ pair.0, add ]
             } else {
@@ -52,8 +54,8 @@ extension Polymer {
     }
     
     func toPairMap() -> PolymerPairMap {
-        return zip(self[0..<count-1], self[1..<count])
-            .map { [ $0.0, $0.1 ] }
+        return windows(ofCount: 2)
+            .map { [ $0.first!, $0.last! ] }
             .countUnique()
     }
 }
