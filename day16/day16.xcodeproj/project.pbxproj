@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		F75E42C1276B14500068479B /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = F75E42C0276B14500068479B /* Algorithms */; };
+		F75E42C3276B2C4B0068479B /* Packet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75E42C2276B2C4B0068479B /* Packet.swift */; };
+		F75E42C5276B2C6F0068479B /* PacketParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75E42C4276B2C6F0068479B /* PacketParser.swift */; };
+		F75E42C7276B2C940068479B /* BitStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75E42C6276B2C940068479B /* BitStream.swift */; };
 		F7C0D5B0276B051B0009B080 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7C0D5AF276B051B0009B080 /* main.swift */; };
 /* End PBXBuildFile section */
 
@@ -24,6 +27,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F75E42C2276B2C4B0068479B /* Packet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Packet.swift; sourceTree = "<group>"; };
+		F75E42C4276B2C6F0068479B /* PacketParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketParser.swift; sourceTree = "<group>"; };
+		F75E42C6276B2C940068479B /* BitStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitStream.swift; sourceTree = "<group>"; };
 		F7C0D5AC276B051B0009B080 /* day16 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = day16; sourceTree = BUILT_PRODUCTS_DIR; };
 		F7C0D5AF276B051B0009B080 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,6 +66,9 @@
 			isa = PBXGroup;
 			children = (
 				F7C0D5AF276B051B0009B080 /* main.swift */,
+				F75E42C6276B2C940068479B /* BitStream.swift */,
+				F75E42C2276B2C4B0068479B /* Packet.swift */,
+				F75E42C4276B2C6F0068479B /* PacketParser.swift */,
 			);
 			path = day16;
 			sourceTree = "<group>";
@@ -128,7 +137,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F75E42C5276B2C6F0068479B /* PacketParser.swift in Sources */,
+				F75E42C7276B2C940068479B /* BitStream.swift in Sources */,
 				F7C0D5B0276B051B0009B080 /* main.swift in Sources */,
+				F75E42C3276B2C4B0068479B /* Packet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
