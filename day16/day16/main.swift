@@ -105,6 +105,8 @@ struct PacketParser {
     static let LiteralChunkLength = 5
     static let LiteralContinuationFlag = 0x10
     static let LiteralValueMask = 0x0F
+    static let LiteralValueShiftFactor = 4
+    static let LiteralValueStopReadingFlag = 0
     
     static func parseLiteralPacket(version: Int, stream: BitStream) -> LiteralPacket {
         var keepReading = true
@@ -112,11 +114,11 @@ struct PacketParser {
         
         while (keepReading) {
             let next = stream.readInt(bitCount: LiteralChunkLength)
-            keepReading = (next & LiteralContinuationFlag) != 0
+            keepReading = (next & LiteralContinuationFlag) != LiteralValueStopReadingFlag
             bytes.append(UInt8(next & LiteralValueMask))
         }
         
-        let literal = bytes.reversed().indexed().map { Int($0.1) << ($0.0*4) }.reduce(0) { $0 | $1 }
+        let literal = bytes.reversed().indexed().map { Int($0.1) << ($0.0*LiteralValueShiftFactor) }.reduce(0) { $0 | $1 }
         return LiteralPacket(version: version, literal: literal)
     }
 
