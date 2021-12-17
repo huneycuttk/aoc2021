@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F73EFD492769B30300A60127 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73EFD482769B30300A60127 /* main.swift */; };
+		F7B16A29276C8708009044DC /* Collections in Frameworks */ = {isa = PBXBuildFile; productRef = F7B16A28276C8708009044DC /* Collections */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F7B16A29276C8708009044DC /* Collections in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +45,7 @@
 			children = (
 				F73EFD472769B30300A60127 /* day15 */,
 				F73EFD462769B30300A60127 /* Products */,
+				F7B16A27276C8708009044DC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,6 +65,13 @@
 			path = day15;
 			sourceTree = "<group>";
 		};
+		F7B16A27276C8708009044DC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -78,6 +88,9 @@
 			dependencies = (
 			);
 			name = day15;
+			packageProductDependencies = (
+				F7B16A28276C8708009044DC /* Collections */,
+			);
 			productName = day15;
 			productReference = F73EFD452769B30300A60127 /* day15 */;
 			productType = "com.apple.product-type.tool";
@@ -90,7 +103,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1310;
-				LastUpgradeCheck = 1310;
+				LastUpgradeCheck = 1320;
 				TargetAttributes = {
 					F73EFD442769B30300A60127 = {
 						CreatedOnToolsVersion = 13.1;
@@ -106,6 +119,9 @@
 				Base,
 			);
 			mainGroup = F73EFD3C2769B30300A60127;
+			packageReferences = (
+				F7B16A26276C85E2009044DC /* XCRemoteSwiftPackageReference "swift-collections" */,
+			);
 			productRefGroup = F73EFD462769B30300A60127 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -245,6 +261,7 @@
 		F73EFD4D2769B30300A60127 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4AMVT8TF4Z;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -256,6 +273,7 @@
 		F73EFD4E2769B30300A60127 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4AMVT8TF4Z;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -286,6 +304,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F7B16A26276C85E2009044DC /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F7B16A28276C8708009044DC /* Collections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7B16A26276C85E2009044DC /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = Collections;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F73EFD3D2769B30300A60127 /* Project object */;
 }

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import Collections
 
 let testGrid = try parseGrid(readFile("file:///Users/kph/Stuff/aoc2021/day15/test-input.txt"))
 let grid = try parseGrid(readFile("file:///Users/kph/Stuff/aoc2021/day15/input.txt"))
@@ -81,22 +81,28 @@ extension RiskGrid {
         return newGrid
     }
     
-    typealias Path = (Int, [Point])
+    struct Path : Comparable {
+        static func < (lhs: Array<Element>.Path, rhs: Array<Element>.Path) -> Bool {
+            lhs.weight < rhs.weight
+        }
+        
+        let weight: Int
+        let path: [Point]
+    }
     func lowestWeightPath(from: Point, to: Point) -> Path {
         var visited: Set<Point> = []
-        var queue: [Path] = []
-        queue.append((0, [ from ]))
+        var queue = Heap<Path>()
+        queue.insert(Path(weight: 0, path: [from]))
         
         while (!queue.isEmpty) {
             // find the current lowest weight path
             // this would be much faster with a heap/priority queue
-            queue.sort { $0.0 < $1.0 }
-            let (currentWeight, path) = queue.removeFirst()
+            let path = queue.removeMin()
             
-            let lastPoint = path.last!
+            let lastPoint = path.path.last!
             // if we've reached the destination, success!
             if (lastPoint == to) {
-                return (currentWeight, path)
+                return path
             }
             
             // for each neighboring point, if we haven't been here, add the new
@@ -104,14 +110,14 @@ extension RiskGrid {
             neighboringPoints(point: lastPoint).forEach { neighbor in
                 if (!visited.contains(neighbor)) {
                     let weight = self[neighbor]
-                    queue.append((currentWeight + weight, path + [neighbor]))
+                    queue.insert(Path(weight: path.weight + weight, path: path.path + [neighbor]))
                     visited.insert(neighbor)
                 }
             }
         }
         
         // should not get here!
-        return queue.removeFirst()
+        return queue.removeMin()
     }
 }
 
@@ -173,9 +179,9 @@ func part1() {
     let testGraph = RiskGraph(grid: testGrid)
     let testWeight = testGraph.lowestWeightPath(from: Point(x: 0, y: 0),
                                                 to: Point(x: testGrid.maxRow, y: testGrid.maxCol))
-    let (testWeightGrid, testWeightGridPath) = testGrid.lowestWeightPath(from: Point(x: 0, y: 0),
-                                                                         to: Point(x: testGrid.maxRow, y: testGrid.maxCol))
-    assert(testWeight == testWeightGrid)
+    let testWeightGridPath = testGrid.lowestWeightPath(from: Point(x: 0, y: 0),
+                                                       to: Point(x: testGrid.maxRow, y: testGrid.maxCol))
+    assert(testWeight == testWeightGridPath.weight)
     print("TEST: Lowest weight is \(testWeight)")
     assert(testWeight == 40)
     
@@ -183,9 +189,9 @@ func part1() {
     let graph = RiskGraph(grid: grid)
     let weight = graph.lowestWeightPath(from: Point(x: 0, y: 0),
                                         to: Point(x: grid.maxRow, y: grid.maxCol))
-    let (weightGrid, weightGridPath) = grid.lowestWeightPath(from: Point(x: 0, y: 0),
-                                                             to: Point(x: grid.maxRow, y: grid.maxCol))
-    assert(weight == weightGrid)
+    let weightGridPath = grid.lowestWeightPath(from: Point(x: 0, y: 0),
+                                               to: Point(x: grid.maxRow, y: grid.maxCol))
+    assert(weight == weightGridPath.weight)
     print("Lowest weight is \(weight)")
     assert(weight == 583)
 }
@@ -195,8 +201,9 @@ func part2() {
     let testTiledGraph = RiskGraph(grid: testTiledGrid)
     let testWeight = testTiledGraph.lowestWeightPath(from: Point(x: 0, y: 0),
                                                      to: Point(x: testTiledGrid.maxRow, y: testTiledGrid.maxCol))
-    let (testWeightGrid, testWeightGridPath) = testTiledGrid.lowestWeightPath(from: Point(x: 0, y: 0),
-                                                                              to: Point(x: testTiledGrid.maxRow, y: testTiledGrid.maxCol))
+    let testWeightGridPath = testTiledGrid.lowestWeightPath(from: Point(x: 0, y: 0),
+                                                            to: Point(x: testTiledGrid.maxRow, y: testTiledGrid.maxCol))
+    assert(testWeight == testWeightGridPath.weight)
     print("TEST: Lowest weight is \(testWeight)")
     assert(testWeight == 315)
 
@@ -205,13 +212,11 @@ func part2() {
     let tiledGraph = RiskGraph(grid: tiledGrid)
     let weight = tiledGraph.lowestWeightPath(from: Point(x: 0, y: 0),
                                              to: Point(x: tiledGrid.maxRow, y: tiledGrid.maxCol))
-    let (weightGrid, weightGridPath) = tiledGrid.lowestWeightPath(from: Point(x: 0, y: 0),
-                                                to: Point(x: tiledGrid.maxRow, y: tiledGrid.maxCol))
-    assert(weight == weightGrid)
-    print("Lowest weight is \(weight)")
+    let weightGridPath = tiledGrid.lowestWeightPath(from: Point(x: 0, y: 0),
+                                                    to: Point(x: tiledGrid.maxRow, y: tiledGrid.maxCol))
+    assert(weight == weightGridPath.weight)
+    print("Lowest weight is \(weightGridPath.weight)")
     assert(weight == 2927)
-
-
 }
 
 // UTILITY
