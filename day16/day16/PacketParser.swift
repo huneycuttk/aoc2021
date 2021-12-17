@@ -39,7 +39,7 @@ struct PacketParser {
             bytes.append(UInt8(next & LiteralValueMask))
         }
         
-        let literal = bytes.reversed().indexed().map { Int($0.1) << ($0.0*LiteralValueShiftFactor) }.reduce(0) { $0 | $1 }
+        let literal = bytes.reversed().indexed().map { Int($0.1) << ($0.0*LiteralValueShiftFactor) }.reduce(0, |)
         return LiteralPacket(version: version, literal: literal)
     }
 
