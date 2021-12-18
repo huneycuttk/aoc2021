@@ -50,6 +50,8 @@ class SnailfishNumber : Hashable {
         return SnailfishNumber(left, right)
     }
     
+    // need to use object equality here because otherwise can't sub individual
+    // numbers
     static func == (lhs: SnailfishNumber, rhs: SnailfishNumber) -> Bool {
         lhs === rhs
     }
