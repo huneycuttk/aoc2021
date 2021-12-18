@@ -22,11 +22,7 @@ enum SnailfishNumberError : Error {
 }
 
 func addList(numbers: [SnailfishNumber]) throws -> SnailfishNumber {
-    return try numbers[1..<numbers.count].reduce(numbers[0]) { sum, number in
-        let interim = sum + number
-        let reduced = try interim.reduce()
-        return reduced
-    }
+    return try numbers[1..<numbers.count].reduce(numbers[0]) { try ($0 + $1).reduce() }
 }
 
 func maxSumOfPair(numbers: [SnailfishNumber]) throws -> Int {
