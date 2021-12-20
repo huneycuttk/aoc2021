@@ -75,6 +75,11 @@ struct InfiniteImage {
     let pixels: [Point:Bool]
     let defaultValue: Bool
     
+    init (pixels: [Point:Bool], defaultValue: Bool) {
+        self.pixels = pixels.filter { $0.value != defaultValue }
+        self.defaultValue = defaultValue
+    }
+    
     var min: Point {
         let x = pixels.keys.map { $0.x }.min()!
         let y = pixels.keys.map { $0.y }.min()!
