@@ -72,8 +72,8 @@ struct Point: Hashable {
 }
 
 struct InfiniteImage {
-    var pixels: [Point:Bool]
-    var defaultValue: Bool
+    let pixels: [Point:Bool]
+    let defaultValue: Bool
     
     var min: Point {
         let x = pixels.keys.map { $0.x }.min()!
