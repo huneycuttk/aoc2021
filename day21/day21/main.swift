@@ -111,12 +111,19 @@ func calculateMaxUniverses(player1: Int, player2: Int, winningScore: Int = 21) -
         9: 1
     ]
     
+    // set the initial game
     ongoingGames[PlayerPair(player1: Player(position: player1), player2: Player(position: player2), turnCount: 1)] = 1
     
     while (!ongoingGames.isEmpty) {
         let newGames = ongoingGames.flatMap { (pair, currentGames) -> [(PlayerPair, Int)] in
+            // for each ongoing game, turnCount % 2 tells whose turn it is (0 is player 2, 1 is player 1)
             let turnCount = (pair.turnCount) % 2
-            return [Int](3...9).compactMap { roll -> (PlayerPair, Int)? in
+            return (3...9).compactMap { roll -> (PlayerPair, Int)? in
+                // for each possible move, the next step involves currentGames
+                // times the number of ways that this move can come about
+                // then, for the player whose turn it is, move the player.
+                // if they win, add the number of games in play to that player's winning
+                // games and abort this particular series.
                 let newPair: PlayerPair
                 let newGames = currentGames * movePossibilities[roll]!
                 if (turnCount == 0) {
@@ -135,14 +142,20 @@ func calculateMaxUniverses(player1: Int, player2: Int, winningScore: Int = 21) -
                     newPair = PlayerPair(player1: newP1, player2: pair.player2, turnCount: turnCount+1)
                 }
                 
+                // otherwise, submit the next turn in this series for processing.
                 return (newPair, newGames)
             }
         }
+        
+        // for each returned series of games collapse any that are identical.
+        // the number of games involved is the sum of all identical sequences.
+        // then make that the current ongoing games hash.
         var newGamesHash = [PlayerPair:Int]()
         newGames.forEach { (pair, games) in newGamesHash[pair, default:0] += games }
         ongoingGames = newGamesHash
     }
     
+    // we now have the answer.
     print("P1 won \(p1Won) P2 won \(p2Won)")
     return p1Won > p2Won ? p1Won : p2Won
 }
