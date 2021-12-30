@@ -20,10 +20,6 @@ let testInstructions2 = try parse(readFile("file:///Users/kph/Stuff/aoc2021/day2
 let instructions = try parse(readFile("file:///Users/kph/Stuff/aoc2021/day22/input.txt"))
 
 let finalReactor = simplestInstructions.reduce(Reactor()) { reactor, instruction in
-    let points = reactor.points
-    points.forEach { print("\($0)") }
-    print("\(points.count)")
-    print ("Processing instruction \(instruction)")
         let (range, onoff) = instruction
         if (onoff) {
             return reactor.turnOn(range: range)
@@ -32,15 +28,20 @@ let finalReactor = simplestInstructions.reduce(Reactor()) { reactor, instruction
         }
     }
 let points = finalReactor.points
-points.forEach { print("\($0)") }
-print("\(points.count) \(finalReactor.count)")
-
+assert(finalReactor.count == 39)
 
 part1()
 part2()
 
 typealias Instruction = (CuboidRange, Bool)
-
+struct Point: Hashable {
+    let x,y,z: Int
+    init(_ x: Int, _ y: Int, _ z: Int) {
+        self.x = x
+        self.y = y
+        self.z = z
+    }
+}
 struct CuboidRange : Hashable {
     let x, y, z: Range<Int>
     
@@ -71,27 +72,60 @@ struct CuboidRange : Hashable {
             return [lhs]
         }
         
-        // if there's an overlap, we have to break this into three different cube ranges
+        // if there's an overlap, we have to break this into many different cube ranges
         
         // first get the intersection of each individual coordinate
         let ix = lhs.x & rhs.x
         let iy = lhs.y & rhs.y
         let iz = lhs.z & rhs.z
         
-        // then get the difference
-        let dx = lhs.x - rhs.x
-        let dy = lhs.y - rhs.y
-        let dz = lhs.z - rhs.z
+        // then get the difference.  there can be two -- if rhs is in the middle
+        // of lhs, then the two differences will be the bits of lhs on either side of rhs
+        let (dx1, dx2) = lhs.x - rhs.x
+        let (dy1, dy2) = lhs.y - rhs.y
+        let (dz1, dz2) = lhs.z - rhs.z
         
-        return [
-            CuboidRange(x: ix, y: iy, z: dz),
-            CuboidRange(x: ix, y: dy, z: iz),
-            CuboidRange(x: ix, y: dy, z: dz),
-            CuboidRange(x: dx, y: iy, z: iz),
-            CuboidRange(x: dx, y: iy, z: dz),
-            CuboidRange(x: dx, y: dy, z: iz),
-            CuboidRange(x: dx, y: dy, z: dz)
+        let result = [
+            CuboidRange(x: ix, y: iy, z: dz1),
+            CuboidRange(x: ix, y: iy, z: dz2),
+
+            CuboidRange(x: ix, y: dy1, z: iz),
+            CuboidRange(x: ix, y: dy1, z: dz2),
+            CuboidRange(x: ix, y: dy1, z: dz1),
+
+            CuboidRange(x: ix, y: dy2, z: iz),
+            CuboidRange(x: ix, y: dy2, z: dz1),
+            CuboidRange(x: ix, y: dy2, z: dz2),
+
+            
+            CuboidRange(x: dx1, y: iy, z: iz),
+            CuboidRange(x: dx1, y: iy, z: dz1),
+            CuboidRange(x: dx1, y: iy, z: dz2),
+
+            CuboidRange(x: dx1, y: dy1, z: iz),
+            CuboidRange(x: dx1, y: dy1, z: dz1),
+            CuboidRange(x: dx1, y: dy1, z: dz2),
+
+            CuboidRange(x: dx1, y: dy2, z: iz),
+            CuboidRange(x: dx1, y: dy2, z: dz1),
+            CuboidRange(x: dx1, y: dy2, z: dz2),
+
+            CuboidRange(x: dx2, y: iy, z: iz),
+            CuboidRange(x: dx2, y: iy, z: dz1),
+            CuboidRange(x: dx2, y: iy, z: dz2),
+            
+            CuboidRange(x: dx2, y: dy1, z: iz),
+            CuboidRange(x: dx2, y: dy1, z: dz1),
+            CuboidRange(x: dx2, y: dy1, z: dz2),
+
+            CuboidRange(x: dx2, y: dy2, z: iz),
+            CuboidRange(x: dx2, y: dy2, z: dz1),
+            CuboidRange(x: dx2, y: dy2, z: dz2)
+
         ].filter { !$0.isEmpty }
+        
+        assert(result.map { $0.count }.reduce(0, +) + (rhs&lhs).count == lhs.count)
+        return result
     }
     
     var count: Int {
@@ -114,7 +148,6 @@ struct Reactor {
         }
         
         func evaluate() -> [CuboidRange] {
-            print("Processing range \(range) with \(intersections.count) intersections")
             return intersections.filter { !$0.isEmpty }
                 .reduce([ range ]) { results, intersection in results.flatMap { $0 - intersection } }
         }
@@ -149,18 +182,20 @@ struct Reactor {
         onRanges.map { $0.count }.reduce(0, +)
     }
     
-    var points: [(Int,Int,Int)] {
-        onRanges.flatMap { $0.evaluate() }.flatMap { range -> [(Int,Int,Int)] in
-            var res = [(Int,Int,Int)]()
+    var points: [Point] {
+        let ranges = onRanges.flatMap { $0.evaluate() }
+            
+        return Array(ranges.flatMap { range -> [Point] in
+            var res = [Point]()
             for x in range.x {
                 for y in range.y {
                     for z in range.z {
-                        res.append((x,y,z))
+                        res.append(Point(x,y,z))
                     }
                 }
             }
             return res
-        }
+        }.uniqued())
     }
     
 }
@@ -178,40 +213,19 @@ func parse(_ data: [String]) -> [Instruction] {
 
 func doAllInstructions(_ instructions: [Instruction]) -> Int {
     let finalReactor = instructions.reduce(Reactor()) { reactor, instruction in
-        print ("Processing instruction \(instruction)")
-            let (range, onoff) = instruction
-            if (onoff) {
-                return reactor.turnOn(range: range)
-            } else {
-                return reactor.turnOff(range: range)
-            }
+        let (range, onoff) = instruction
+        if (onoff) {
+            return reactor.turnOn(range: range)
+        } else {
+            return reactor.turnOff(range: range)
         }
+    }
     return finalReactor.count
 }
 
-struct Point : Hashable { let x,y,z: Int }
 func doFiftyCubed(instructions: [Instruction]) -> Int {
     let fiftyCubed = CuboidRange(x: -50..<51, y: -50..<51, z: -50..<51)
     return doAllInstructions(instructions.map { ($0.0.clamped(to: fiftyCubed), $0.1) })
-//
-//    var points = Set<Point>()
-//    for instruction in instructions {
-//        let (range, onoff) = instruction
-//        let clamped = range.clamped(to: fiftyCubed)
-//        for x in clamped.x {
-//            for y in clamped.y {
-//                for z in clamped.z {
-//                    let point = Point(x: x, y: y, z: z)
-//                    if (onoff) {
-//                        points.insert(point)
-//                    } else {
-//                        points.remove(point)
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    return points.count
 }
 
 func part1() {
@@ -232,7 +246,7 @@ func part2() {
 
     let onCount = doAllInstructions(instructions)
     print("On count is \(onCount)")
-    //assert(onCount == )
+    assert(onCount == 1346544039176841)
 }
 
 
@@ -267,30 +281,42 @@ extension Range where Bound == Int {
         return lower..<upper
     }
     
-    static func -(lhs: Range, rhs: Range) -> Range {
+    
+    static func -(lhs: Range, rhs: Range) -> (Range, Range) {
+        let empty = 0..<0
         if (!lhs.overlaps(rhs)) {
-            return lhs
+            return (lhs, empty)
         }
         
         // if lhs is contained entirely in rhs, the result is an empty set
         if (lhs.upperBound <= rhs.upperBound && lhs.lowerBound >= rhs.lowerBound) {
-            return 0..<0
+            return (empty, empty)
         }
         
-        // if rhs is contained entirely in lhs, can't do this operation
+        // if rhs is contained entirely in lhs, have two ranges to return --
+        // the lower part and the upper part.
         if (rhs.upperBound < lhs.upperBound && rhs.lowerBound > lhs.lowerBound) {
-            return 0..<0 // should throw an error
+            return (lhs.lowerBound..<rhs.lowerBound, rhs.upperBound..<lhs.upperBound)
         }
         
         let newLower, newUpper: Int
+        // if the rhs starts in the middle of the lhs and extends past it, then
+        // the lower bound is the beginning of the left hand side and the upper
+        // bound is the beginning of the right hand side (not incusive; open range)
         if (lhs.upperBound <= rhs.upperBound && lhs.lowerBound < rhs.lowerBound) {
             newUpper = rhs.lowerBound
             newLower = lhs.lowerBound
-        } else {
-            newLower = rhs.upperBound-1 // since the rhs range doesn't contain this boundary, can include it in the difference
+        } else if (lhs.upperBound > rhs.upperBound && lhs.lowerBound >= rhs.lowerBound) {
+            // if the rhs starts to the left of the lhs and ends in the middle of it,
+            // then the new lower bound is where the rhs ends and the lhs starts
+            // and the new upper bound is where the lhs ended
+            newLower = rhs.upperBound
             newUpper = lhs.upperBound
+        } else {
+            print ("ERROR CONDITION 2 \(lhs) - \(rhs)")
+            return (empty, empty)
         }
-        return newLower..<newUpper
+        return (newLower..<newUpper, empty)
     }
     
 }
