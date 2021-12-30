@@ -33,7 +33,7 @@ assert(finalReactor.count == 39)
 part1()
 part2()
 
-typealias Instruction = (CuboidRange, Bool)
+typealias Instruction = (CubicRange, Bool)
 struct Point: Hashable {
     let x,y,z: Int
     init(_ x: Int, _ y: Int, _ z: Int) {
@@ -42,32 +42,32 @@ struct Point: Hashable {
         self.z = z
     }
 }
-struct CuboidRange : Hashable {
+struct CubicRange : Hashable {
     let x, y, z: Range<Int>
     
-    static let EmptyRange = CuboidRange(x: 0..<0, y: 0..<0, z: 0..<0)
+    static let EmptyRange = CubicRange(x: 0..<0, y: 0..<0, z: 0..<0)
 
     var isEmpty: Bool {
         x.isEmpty || y.isEmpty || z.isEmpty
     }
     
-    func clamped(to range: CuboidRange) -> CuboidRange {
-        CuboidRange(x: x.clamped(to: range.x), y: y.clamped(to: range.y), z: z.clamped(to: range.z))
+    func clamped(to range: CubicRange) -> CubicRange {
+        CubicRange(x: x.clamped(to: range.x), y: y.clamped(to: range.y), z: z.clamped(to: range.z))
     }
     
-    static func &(lhs: CuboidRange, rhs: CuboidRange) -> CuboidRange {
+    static func &(lhs: CubicRange, rhs: CubicRange) -> CubicRange {
         if (!lhs.overlaps(rhs)) {
             return EmptyRange
         }
         
-        return CuboidRange(x: lhs.x & rhs.x, y: lhs.y & rhs.y, z: lhs.z & rhs.z)
+        return CubicRange(x: lhs.x & rhs.x, y: lhs.y & rhs.y, z: lhs.z & rhs.z)
     }
     
-    func overlaps(_ other: CuboidRange) -> Bool {
+    func overlaps(_ other: CubicRange) -> Bool {
         x.overlaps(other.x) && y.overlaps(other.y) && z.overlaps(other.z)
     }
     
-    static func -(lhs: CuboidRange, rhs: CuboidRange) -> [CuboidRange] {
+    static func -(lhs: CubicRange, rhs: CubicRange) -> [CubicRange] {
         if (!lhs.overlaps(rhs)) {
             return [lhs]
         }
@@ -86,41 +86,41 @@ struct CuboidRange : Hashable {
         let (dz1, dz2) = lhs.z - rhs.z
         
         let result = [
-            CuboidRange(x: ix, y: iy, z: dz1),
-            CuboidRange(x: ix, y: iy, z: dz2),
+            CubicRange(x: ix, y: iy, z: dz1),
+            CubicRange(x: ix, y: iy, z: dz2),
 
-            CuboidRange(x: ix, y: dy1, z: iz),
-            CuboidRange(x: ix, y: dy1, z: dz2),
-            CuboidRange(x: ix, y: dy1, z: dz1),
+            CubicRange(x: ix, y: dy1, z: iz),
+            CubicRange(x: ix, y: dy1, z: dz2),
+            CubicRange(x: ix, y: dy1, z: dz1),
 
-            CuboidRange(x: ix, y: dy2, z: iz),
-            CuboidRange(x: ix, y: dy2, z: dz1),
-            CuboidRange(x: ix, y: dy2, z: dz2),
+            CubicRange(x: ix, y: dy2, z: iz),
+            CubicRange(x: ix, y: dy2, z: dz1),
+            CubicRange(x: ix, y: dy2, z: dz2),
 
             
-            CuboidRange(x: dx1, y: iy, z: iz),
-            CuboidRange(x: dx1, y: iy, z: dz1),
-            CuboidRange(x: dx1, y: iy, z: dz2),
+            CubicRange(x: dx1, y: iy, z: iz),
+            CubicRange(x: dx1, y: iy, z: dz1),
+            CubicRange(x: dx1, y: iy, z: dz2),
 
-            CuboidRange(x: dx1, y: dy1, z: iz),
-            CuboidRange(x: dx1, y: dy1, z: dz1),
-            CuboidRange(x: dx1, y: dy1, z: dz2),
+            CubicRange(x: dx1, y: dy1, z: iz),
+            CubicRange(x: dx1, y: dy1, z: dz1),
+            CubicRange(x: dx1, y: dy1, z: dz2),
 
-            CuboidRange(x: dx1, y: dy2, z: iz),
-            CuboidRange(x: dx1, y: dy2, z: dz1),
-            CuboidRange(x: dx1, y: dy2, z: dz2),
+            CubicRange(x: dx1, y: dy2, z: iz),
+            CubicRange(x: dx1, y: dy2, z: dz1),
+            CubicRange(x: dx1, y: dy2, z: dz2),
 
-            CuboidRange(x: dx2, y: iy, z: iz),
-            CuboidRange(x: dx2, y: iy, z: dz1),
-            CuboidRange(x: dx2, y: iy, z: dz2),
+            CubicRange(x: dx2, y: iy, z: iz),
+            CubicRange(x: dx2, y: iy, z: dz1),
+            CubicRange(x: dx2, y: iy, z: dz2),
             
-            CuboidRange(x: dx2, y: dy1, z: iz),
-            CuboidRange(x: dx2, y: dy1, z: dz1),
-            CuboidRange(x: dx2, y: dy1, z: dz2),
+            CubicRange(x: dx2, y: dy1, z: iz),
+            CubicRange(x: dx2, y: dy1, z: dz1),
+            CubicRange(x: dx2, y: dy1, z: dz2),
 
-            CuboidRange(x: dx2, y: dy2, z: iz),
-            CuboidRange(x: dx2, y: dy2, z: dz1),
-            CuboidRange(x: dx2, y: dy2, z: dz2)
+            CubicRange(x: dx2, y: dy2, z: iz),
+            CubicRange(x: dx2, y: dy2, z: dz1),
+            CubicRange(x: dx2, y: dy2, z: dz2)
 
         ].filter { !$0.isEmpty }
         
@@ -135,19 +135,19 @@ struct CuboidRange : Hashable {
 
 struct Reactor {
     struct RangeRecord {
-        let range: CuboidRange
-        let intersections: [CuboidRange]
+        let range: CubicRange
+        let intersections: [CubicRange]
         
-        init(range: CuboidRange, intersections: [CuboidRange]) {
+        init(range: CubicRange, intersections: [CubicRange]) {
             self.range = range
             self.intersections = intersections.filter { !$0.isEmpty }
         }
         
-        func addToRemoveIntersection(with range: CuboidRange) -> RangeRecord {
+        func addToRemoveIntersection(with range: CubicRange) -> RangeRecord {
             RangeRecord(range: self.range, intersections: intersections + [ range & self.range ])
         }
         
-        func evaluate() -> [CuboidRange] {
+        func evaluate() -> [CubicRange] {
             return intersections.filter { !$0.isEmpty }
                 .reduce([ range ]) { results, intersection in results.flatMap { $0 - intersection } }
         }
@@ -163,7 +163,7 @@ struct Reactor {
         self.onRanges = onRanges
     }
     
-    func turnOn(range: CuboidRange) -> Reactor {
+    func turnOn(range: CubicRange) -> Reactor {
         if (range.isEmpty) {
             return self
         }
@@ -171,7 +171,7 @@ struct Reactor {
         return Reactor(onRanges: newRanges + [ RangeRecord(range: range, intersections: []) ])
     }
     
-    func turnOff(range: CuboidRange) -> Reactor {
+    func turnOff(range: CubicRange) -> Reactor {
         if (range.isEmpty) {
             return self
         }
@@ -207,7 +207,7 @@ func parse(_ data: [String]) -> [Instruction] {
             .map { $0.split(separator: "=").last! }
             .map { $0.components(separatedBy: "..").map { Int($0)! } }
             .map { Range($0.first!...$0.last!) }
-        return (CuboidRange(x: coordinates[0], y: coordinates[1], z: coordinates[2]), onoff)
+        return (CubicRange(x: coordinates[0], y: coordinates[1], z: coordinates[2]), onoff)
     }
 }
 
@@ -224,7 +224,7 @@ func doAllInstructions(_ instructions: [Instruction]) -> Int {
 }
 
 func doFiftyCubed(instructions: [Instruction]) -> Int {
-    let fiftyCubed = CuboidRange(x: -50..<51, y: -50..<51, z: -50..<51)
+    let fiftyCubed = CubicRange(x: -50..<51, y: -50..<51, z: -50..<51)
     return doAllInstructions(instructions.map { ($0.0.clamped(to: fiftyCubed), $0.1) })
 }
 
